@@ -1,94 +1,98 @@
 # Assignment #4: Application Containerization
 
-This is a simple Node.js web application designed for learning Docker containerization concepts.
+## Project Overview
 
-## Application Overview
+This project demonstrates how to containerize a Node.js web application using Docker. Docker packages the application and its dependencies into an image so it can run consistently across different environments without requiring Node.js to be installed directly on the host machine.
 
-This application is a basic Express.js web server that:
-- Serves a static HTML page at the root (`/`)
+The application uses Express.js and runs on port 3000.
+
+## Application Features
+
+- Serves a static web page at `/`
 - Provides an API status endpoint at `/api/status`
 - Includes a health check endpoint at `/health`
-- Runs on port 3000 by default (configurable via PORT environment variable)
+- Uses Node.js and Express.js
+- Runs inside a Docker container
 
-## What's Included
+## Project Structure
 
-- **app.js**: Main application server file
-- **package.json**: Node.js dependencies and project configuration
-- **public/index.html**: Static HTML page that confirms successful containerization
-- **public/style.css**: Styling for the web page
-
-## Running Without Docker (for reference only)
-
-If you wanted to run this application directly (not required for assignment):
-```bash
-npm install
-npm start
+```text
+Assignment-4-Build-and-Run-a-Docker-Image---/
+├── Dockerfile
+├── README.md
+├── app.js
+├── package.json
+├── public/
+│   ├── index.html
+│   └── style.css
+└── screenshots/
+    ├── app-running.png
+    └── api-status.png
 ```
 
-## Your Docker Assignment
+## Dockerfile
 
-**DO NOT MODIFY THE APPLICATION CODE**
+The Dockerfile uses Node.js as its base image, sets a working directory, installs dependencies, copies the application files, exposes port 3000, and starts the application.
 
-Your task is to containerize this existing application using Docker. You need to:
+Each Dockerfile instruction includes a comment explaining its purpose.
 
-1. Create a `Dockerfile` that properly containerizes this Node.js application
-2. Build a Docker image from your Dockerfile
-3. Run a container from your image
-4. Verify the application works by accessing it in your browser
+## Requirements
+
+- Docker Desktop installed and running
+- The provided application files
+- A terminal for running Docker commands
+- A web browser for testing the application
+
+Node.js does not need to be installed on the host computer because the Docker image provides the runtime environment.
 
 ## Starting the Application
 
-- To build the docker image run the command:
+### 1. Build the Docker Image
+
+Run this command from the project root directory:
 
 ```bash
-
+docker build -t my-node-app .
 ```
 
-- To run your docker container in port 3000 run the command:
+This command builds a Docker image named `my-node-app` using the Dockerfile in the current directory.
+
+### 2. Run the Docker Container
+
+Run the following command to start the application in detached mode and map port 3000:
 
 ```bash
-
+docker run -d -p 3000:3000 --name my-node-container my-node-app
 ```
 
-## Reflection Question
-**Answer the following question in the space below**: How does containerization with Docker differ from using virtual machines, and why might a development team choose Docker containers over VMs for deploying applications like the one you just containerized?
+The `-d` flag runs the container in the background. The `-p 3000:3000` option maps port 3000 on the host computer to port 3000 inside the container.
 
+If a container named `my-node-container` already exists, remove the old container before running the command again:
 
-
-## Application Requirements for Docker
-
-Your Dockerfile should ensure:
-- The application has Node.js runtime available
-- All application files are copied into the container
-- Dependencies are installed (`npm install`)
-- Port 3000 is exposed
-- The application starts with `npm start`
-- The container can be accessed from your host machine
-
-## Verification
-
-When your Docker container is running correctly:
-- Navigate to `http://localhost:3000` (or whatever port you mapped)
-- You should see a success page confirming containerization worked
-- The `/api/status` endpoint should return JSON status information
-
-## Troubleshooting Tips
-
-- Make sure your port mapping is correct in the `docker run` command
-- Check that all files are copied into the container
-- Verify Node.js dependencies are installed in the container
-- Use `docker logs <container-name>` to see application output
-
-## File Structure Expected
-```
-docker-assignment/
-├── Dockerfile          # You create this
-├── app.js              # Provided
-├── package.json        # Provided
-├── public/             # Provided
-│   ├── index.html      # Provided
-│   └── style.css       # Provided
-└── README.md           # This file
+```bash
+docker rm -f my-node-container
 ```
 
-Good luck with your Docker containerization!
+Then rerun the Docker command above.
+
+## Testing and Verification
+
+After starting the container, open the following URLs in a web browser.
+
+### Application Page
+
+http://localhost:3000
+
+The main page should display the provided success page, confirming that the application is accessible through Docker.
+
+### API Status Endpoint
+
+http://localhost:3000/api/status
+
+The endpoint should return JSON containing status information from the application.
+
+### Health Check Endpoint
+
+http://localhost:3000/health
+
+This endpoint can be
